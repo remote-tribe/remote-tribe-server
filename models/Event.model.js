@@ -1,26 +1,33 @@
 const { Schema, model } = require('mongoose')
 
-const articleSchema = new Schema(
+const eventSchema = new Schema(
     {
-        Author: {
+        host: {
             type: Schema.Types.ObjectId,
+            required: [true, 'Host is required.'],
+            ref: "User"
+
+        },
+        attendees: {
+            type: [Schema.Types.ObjectId],
             ref: "User"
         },
 
-        title: {
+        subject: {
             type: String,
-            required: [true, 'Title is required.'],
-            unique: true,
+            required: [true, 'Subject is required.'],
+        },
 
-        },
-        Content: {
+        time: {
             type: String,
-            required: [true, 'Content is required.'],
+            required: [true, 'Time is required.']
         },
+
         Comments: {
             type: [Schema.Types.ObjectId],
             ref: "Comment"
         },
+
         Likes: {
             type: Number,
         },
@@ -28,12 +35,15 @@ const articleSchema = new Schema(
         images: {
             type: String,
         },
+        map: {
+            type: String,
+        }
     },
     {
         timestamps: true,
     },
 )
 
-const Article = model('Article', articleSchema)
+const Event = model('Event', eventSchema)
 
-module.exports = Article
+module.exports = Event
