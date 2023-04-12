@@ -2,9 +2,17 @@ const { Schema, model } = require('mongoose')
 
 const userSchema = new Schema(
 	{
-		isAdmin: {
-			type: Boolean,
-			default: false,
+		firstName: {
+			type: String,
+			required: [true, 'First name is required.'],
+		},
+		lastName: {
+			type: String,
+			required: [true, 'Last name is required.'],
+		},
+		username: {
+			type: String,
+			required: [true, 'Username is required'],
 		},
 		email: {
 			type: String,
@@ -16,14 +24,6 @@ const userSchema = new Schema(
 		password: {
 			type: String,
 			required: [true, 'Password is required.'],
-		},
-		firstName: {
-			type: String,
-			required: [true, 'First name is required.'],
-		},
-		secondName: {
-			type: String,
-			required: [true, 'Second name is required.'],
 		},
 		description: {
 			type: String,
@@ -52,6 +52,10 @@ const userSchema = new Schema(
 		events: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Event',
+		},
+		isAdmin: {
+			type: Boolean,
+			default: false,
 		},
 	},
 	{
