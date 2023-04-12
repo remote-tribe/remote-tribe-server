@@ -13,7 +13,7 @@ const messageSchema = new Schema(
             ref: "User"
         },
 
-        Content: {
+        content: {
             type: String,
             required: [true, 'Content is required.'],
         },
