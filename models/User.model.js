@@ -29,7 +29,7 @@ const userSchema = new Schema(
 			type: String,
 		},
 		profilePicture: {
-			type: File,
+			type: String,
 		},
 		location: {
 			type: String,
