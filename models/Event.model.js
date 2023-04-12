@@ -23,12 +23,12 @@ const eventSchema = new Schema(
             required: [true, 'Time is required.']
         },
 
-        Comments: {
+        comments: {
             type: [Schema.Types.ObjectId],
             ref: "Comment"
         },
 
-        Likes: {
+        likes: {
             type: Number,
         },
 

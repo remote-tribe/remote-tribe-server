@@ -2,7 +2,7 @@ const { Schema, model } = require('mongoose')
 
 const commentSchema = new Schema(
     {
-        Author: {
+        author: {
             type: Schema.Types.ObjectId,
             ref: "User"
         },
@@ -12,12 +12,12 @@ const commentSchema = new Schema(
             ref: 'Article',
         },
 
-        Content: {
+        content: {
             type: String,
             required: [true, 'Content is required.'],
         },
 
-        Likes: {
+        likes: {
             type: Number,
         },
     },
