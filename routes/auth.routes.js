@@ -16,8 +16,8 @@ const { isAuthenticated } = require("../middleware/jwt.middleware.js");
 // How many rounds should bcrypt run the salt (default - 10 rounds)
 const saltRounds = 10;
 
-// article /auth/signup  - Creates a new user in the database
-router.article("/signup", (req, res, next) => {
+// post /auth/signup  - Creates a new user in the database
+router.post("/signup", (req, res, next) => {
   const { email, password, name } = req.body;
 
   // Check if email or password or name are provided as empty strings
@@ -74,8 +74,8 @@ router.article("/signup", (req, res, next) => {
     .catch((err) => next(err)); // In this case, we send error handling to the error handling middleware.
 });
 
-// article  /auth/login - Verifies email and password and returns a JWT
-router.article("/login", (req, res, next) => {
+// post  /auth/login - Verifies email and password and returns a JWT
+router.post("/login", (req, res, next) => {
   const { email, password } = req.body;
 
   // Check if email or password are provided as empty string
