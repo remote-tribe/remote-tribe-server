@@ -70,9 +70,9 @@ router.post('/login', (req, res, next) => {
 			const passwordCorrect = bcrypt.compareSync(password, foundUser.password)
 
 			if (passwordCorrect) {
-				const { _id, email, name } = foundUser
+				const { _id, username } = foundUser
 
-				const payload = { _id, email, name }
+				const payload = { _id, username }
 
 				let expiresIn = '1h'
 				if (rememberMe) {
@@ -84,7 +84,7 @@ router.post('/login', (req, res, next) => {
 					expiresIn: expiresIn,
 				})
 
-				res.status(200).json({ authToken: authToken, username: foundUser.username })
+				res.status(200).json({ authToken: authToken })
 			} else {
 				res.status(401).json({ message: 'Unable to authenticate the user' })
 			}
