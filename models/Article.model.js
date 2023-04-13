@@ -22,6 +22,7 @@ const articleSchema = new Schema(
 		},
 		likes: {
 			type: Number,
+			default: 0,
 		},
 
 		likedBy: {
