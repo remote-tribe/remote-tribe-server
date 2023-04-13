@@ -84,7 +84,9 @@ router.post('/login', (req, res, next) => {
 					expiresIn: expiresIn,
 				})
 
-				res.status(200).json({ authToken: authToken })
+				res
+					.status(200)
+					.json({ authToken: authToken, user: { username: foundUser.username, id: foundUser._id } })
 			} else {
 				res.status(401).json({ message: 'Unable to authenticate the user' })
 			}
