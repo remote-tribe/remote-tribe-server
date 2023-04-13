@@ -9,13 +9,9 @@ const fileUploader = require('../config/cloudinary.config');
 //require Article model
 const Article = require("../models/Article.model");
 
-// Require necessary (isLoggedOut and isLiggedIn) middleware in order to control access to specific routes
-const isLoggedIn = require("../middleware/isLoggedIn");
-const isOwner = require("../middleware/isOwner");
-
 
 //READ: list of articles from community
-router.get("/community/articles", isLoggedIn, (req, res, next) => {
+router.get("/community/articles", (req, res, next) => {
     Article.find()
         .then(articleArr => {
             const data = {
@@ -35,10 +31,10 @@ router.get("/community/articles", isLoggedIn, (req, res, next) => {
 
 // CREATE: article
 
-router.post("/community/articles", fileUploader.single('article-image'), isLoggedIn, (req, res, next) => {
+router.post("/community/articles/:articleId", fileUploader.single('article-image'), (req, res, next) => {
 
     const { title, content } = req.body;
-    const userId = req.session.currentUser._id;
+    const userId = req.params;
     const { imageUrl } = req.file.path || "";
 
     Article.create({ author: userId, title, content, imageUrl, createdAt: new Date() })
@@ -57,7 +53,7 @@ router.post("/community/articles", fileUploader.single('article-image'), isLogge
 
 
 //READ: article details
-router.get("/community/article/:articleId", isLoggedIn, (req, res, next) => {
+router.get("/community/article/:articleId", (req, res, next) => {
 
     const { articleId } = req.params;
 
@@ -77,7 +73,7 @@ router.get("/community/article/:articleId", isLoggedIn, (req, res, next) => {
 });
 
 //DELETE article
-router.delete('/community/article/:articleId', isLoggedIn, isOwner, (req, res, next) => {
+router.delete('/community/article/:articleId', (req, res, next) => {
     const { articleId } = req.params;
 
     Article.findByIdAndDelete(articleId)
@@ -87,7 +83,7 @@ router.delete('/community/article/:articleId', isLoggedIn, isOwner, (req, res, n
 
 
 // UPDATE:  article
-router.put("/community/article/:articleId", isLoggedIn, isOwner, fileUploader.single('post-image'), (req, res, next) => {
+router.put("/community/article/:articleId", fileUploader.single('post-image'), (req, res, next) => {
     const { articleId } = req.params;
 
     Article.findByIdAndUpdate(articleId, req.body, { new: true })
@@ -101,8 +97,8 @@ router.put("/community/article/:articleId", isLoggedIn, isOwner, fileUploader.si
 
 //GET my-article
 //READ: list of articles from community
-router.get("/community/my-articles", isLoggedIn, (req, res, next) => {
-    const userId = req.session.currentUser._id;
+router.get("/community/my-articles/:userId", (req, res, next) => {
+    const userId = req.params;
 
     Article.find({ author: userId })
         .then(articleArr => {
