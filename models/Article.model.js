@@ -24,11 +24,6 @@ const articleSchema = new Schema(
 			type: Number,
 		},
 
-		content: {
-			type: String,
-			required: [true, 'Content is required.'],
-		},
-
 		comments: {
 			type: [Schema.Types.ObjectId],
 			ref: 'Comment',
