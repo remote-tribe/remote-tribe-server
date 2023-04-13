@@ -72,7 +72,7 @@ router.post('/login', (req, res, next) => {
 			if (passwordCorrect) {
 				const { _id, username } = foundUser
 
-				const payload = { _id, username }
+				const payload = { id: _id, username }
 
 				let expiresIn = '1h'
 				if (rememberMe) {
