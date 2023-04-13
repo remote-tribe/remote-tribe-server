@@ -24,14 +24,6 @@ const articleSchema = new Schema(
 			type: Number,
 		},
 
-		comments: {
-			type: [Schema.Types.ObjectId],
-			ref: 'Comment',
-		},
-
-		likes: {
-			type: Number,
-		},
 		likedBy: {
 			type: [Schema.Types.ObjectId],
 			ref: 'User',
