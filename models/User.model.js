@@ -32,7 +32,7 @@ const userSchema = new Schema(
 			type: String,
 		},
 		location: {
-			type: String,
+			type: Object,
 		},
 		articles: {
 			type: [Schema.Types.ObjectId],
