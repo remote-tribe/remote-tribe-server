@@ -51,11 +51,12 @@ router.post('/community/articles', fileUploader.single('article-image'), async (
 
 //READ: article details
 router.get('/community/article/:articleId', (req, res, next) => {
-	const articleId = req.params
+	const { articleId } = req.params
 
 	Article.findById(articleId)
-		.populate('author', 'comments')
+		.populate('author')
 		.then((articleDetails) => {
+			console.log(articleDetails)
 			res.json(articleDetails)
 		})
 		.catch((err) => {
