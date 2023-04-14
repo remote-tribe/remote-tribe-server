@@ -1,6 +1,7 @@
 const express = require('express')
 const router = express.Router()
 const User = require('../models/User.model')
+const Comment = require('../models/Comment.model')
 
 // require cloudinary
 const fileUploader = require('../config/cloudinary.config')
@@ -55,8 +56,9 @@ router.get('/community/article/:articleId', (req, res, next) => {
 
 	Article.findById(articleId)
 		.populate('author')
+		.populate('comments')
+
 		.then((articleDetails) => {
-			console.log(articleDetails)
 			res.json(articleDetails)
 		})
 		.catch((err) => {
