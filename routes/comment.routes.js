@@ -58,4 +58,24 @@ router.put('/comment', isAuthenticated, async (req, res) => {
 	}
 })
 
+router.delete('/comment', isAuthenticated, async (req, res) => {
+	try {
+		const { commentId, articleId, userId } = req.query
+
+		const deletedComment = await Comment.findByIdAndDelete(commentId)
+
+		if (!deletedComment) {
+			return res.status(404).json({ message: 'Comment not found' })
+		}
+
+		await Article.updateOne({ _id: articleId }, { $pull: { comments: deletedComment._id } })
+
+		await User.updateOne({ _id: userId }, { $pull: { comments: deletedComment._id } })
+
+		return res.status(200).json({ message: 'Comment deleted successfully' })
+	} catch (error) {
+		return res.status(500).json({ message: 'Internal server error' })
+	}
+})
+
 module.exports = router
