@@ -2,6 +2,7 @@ const router = require('express').Router()
 const User = require('../models/User.model')
 const { isAuthenticated } = require('../middleware/jwt.middleware')
 const jwt = require('jsonwebtoken')
+
 router.get('/users/current', isAuthenticated, async (req, res) => {
 	const { id } = req.payload
 
@@ -19,7 +20,8 @@ router.get('/users/current', isAuthenticated, async (req, res) => {
 })
 
 router.put('/users/current', isAuthenticated, async (req, res) => {
-	const { id, token } = req.payload
+	const { id } = req.payload
+	console.log(req.payload)
 	try {
 		const user = await User.findById(id)
 		if (!user) {
@@ -34,7 +36,7 @@ router.put('/users/current', isAuthenticated, async (req, res) => {
 		await user.save()
 		const authToken = jwt.sign({ username: user.username, id: user._id }, process.env.TOKEN_SECRET, {
 			algorithm: 'HS256',
-			expiresIn: '6h',
+			expiresIn: '24h',
 		})
 		return res.json({ user: { username: user.username, id: user._id }, authToken })
 	} catch (error) {
