@@ -15,17 +15,13 @@ const app = express()
 require('./config')(app)
 
 // 👇 Start handling routes here
-const indexRoutes = require('./routes/index.routes')
-app.use('/api', indexRoutes)
 
-const authRoutes = require('./routes/auth.routes')
-app.use('/auth', authRoutes)
+app.use('/auth', require('./routes/auth.routes'))
 
-const articleRoutes = require('./routes/article.routes')
-app.use('/api', articleRoutes)
-
-const userRoutes = require('./routes/user.routes')
-app.use('/api', userRoutes)
+app.use('/api', require('./routes/user.routes'))
+app.use('/api', require('./routes/index.routes'))
+app.use('/api', require('./routes/article.routes'))
+app.use('/api', require('./routes/comment.routes'))
 
 // ❗ To handle errors. Routes that don't exist or errors that you handle in specific routes
 require('./error-handling')(app)
