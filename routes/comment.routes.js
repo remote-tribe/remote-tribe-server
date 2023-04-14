@@ -34,4 +34,28 @@ router.post('/comment', isAuthenticated, async (req, res) => {
 	}
 })
 
+router.put('/comment', isAuthenticated, async (req, res) => {
+	try {
+		const { editedComment, commentId, userId } = req.body
+
+		const comment = await Comment.findById(commentId)
+
+		if (!comment) {
+			return res.status(404).json({ message: 'Comment not found' })
+		}
+
+		if (comment.author.toString() !== userId) {
+			return res.status(401).json({ message: 'Unauthorized' })
+		}
+
+		comment.content = editedComment
+
+		await comment.save()
+
+		return res.status(200).json({ message: 'Comment updated successfully' })
+	} catch (error) {
+		return res.status(500).json({ message: 'Internal server error' })
+	}
+})
+
 module.exports = router

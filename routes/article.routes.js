@@ -56,7 +56,13 @@ router.get('/community/article/:articleId', (req, res, next) => {
 
 	Article.findById(articleId)
 		.populate('author')
-		.populate('comments')
+		.populate({
+			path: 'comments',
+			populate: {
+				path: 'author',
+				model: 'User',
+			},
+		})
 
 		.then((articleDetails) => {
 			res.json(articleDetails)
