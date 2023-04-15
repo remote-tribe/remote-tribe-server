@@ -35,8 +35,8 @@ router.post('/signup', (req, res, next) => {
 	}
 
 	User.findOne({ email })
-		.then((foundUser) => {
-			if (foundUser) {
+		.then((user) => {
+			if (user) {
 				res.status(400).json({ message: 'User already exists.' })
 				return
 			}
@@ -61,16 +61,16 @@ router.post('/login', (req, res, next) => {
 	}
 
 	User.findOne({ email })
-		.then((foundUser) => {
-			if (!foundUser) {
+		.then((user) => {
+			if (!user) {
 				res.status(401).json({ message: 'User not found.' })
 				return
 			}
 
-			const passwordCorrect = bcrypt.compareSync(password, foundUser.password)
+			const passwordCorrect = bcrypt.compareSync(password, user.password)
 
 			if (passwordCorrect) {
-				const { _id, username } = foundUser
+				const { _id, username } = user
 
 				const payload = { id: _id, username }
 
@@ -84,9 +84,7 @@ router.post('/login', (req, res, next) => {
 					expiresIn: expiresIn,
 				})
 
-				res
-					.status(200)
-					.json({ authToken: authToken, user: { username: foundUser.username, id: foundUser._id } })
+				res.status(200).json({ authToken: authToken, user: { username: user.username, id: user._id } })
 			} else {
 				res.status(401).json({ message: 'Unable to authenticate the user' })
 			}
@@ -98,13 +96,13 @@ router.post('/verifyPass', isAuthenticated, async (req, res) => {
 	const { email, password } = req.body
 
 	try {
-		User.findOne({ email }).then((foundUser) => {
-			if (!foundUser) {
+		User.findOne({ email }).then((user) => {
+			if (!user) {
 				res.status(404).json({ message: 'User not found.' })
 				return
 			}
 
-			const passwordCorrect = bcrypt.compareSync(password, foundUser.password)
+			const passwordCorrect = bcrypt.compareSync(password, user.password)
 
 			if (!passwordCorrect) {
 				res.status(404).json({ message: 'Wrong password.' })
@@ -116,6 +114,61 @@ router.post('/verifyPass', isAuthenticated, async (req, res) => {
 	} catch (error) {
 		console.log(error)
 		res.status(500).json({ message: 'Failed to verify password' })
+	}
+})
+
+router.post('/email', isAuthenticated, async (req, res) => {
+	const { currentEmail, newEmail, password } = req.body
+
+	try {
+		User.findOne({ email: currentEmail }).then((user) => {
+			if (!user) {
+				res.status(404).json({ message: 'User not found.' })
+				return
+			}
+
+			const passwordCorrect = bcrypt.compareSync(password, user.password)
+
+			if (!passwordCorrect) {
+				res.status(404).json({ message: 'Wrong password.' })
+				return
+			}
+
+			user.email = newEmail
+			user.save()
+
+			res.status(200).json({ message: 'Email changed successfuly.' })
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'Failed to verify password' })
+	}
+})
+
+router.post('/password', isAuthenticated, async (req, res) => {
+	const { password, newPassword, confirmedPassword, userId } = req.body
+	console.log(req.body)
+
+	if (newPassword !== confirmedPassword) {
+		return res.status(400).json({ message: 'New password and confirmed password do not match' })
+	}
+
+	try {
+		const user = await User.findById(userId)
+
+		const passwordCorrect = await bcrypt.compare(password, user.password)
+		if (!passwordCorrect) {
+			return res.status(400).json({ message: 'Current password is incorrect' })
+		}
+
+		const hashedPassword = await bcrypt.hash(newPassword, 10)
+		user.password = hashedPassword
+		await user.save()
+
+		res.json({ message: 'Password updated successfully' })
+	} catch (error) {
+		console.error(error)
+		res.status(500).json({ message: 'Something went wrong' })
 	}
 })
 
