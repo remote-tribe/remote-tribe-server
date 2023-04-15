@@ -94,6 +94,31 @@ router.post('/login', (req, res, next) => {
 		.catch((err) => next(err))
 })
 
+router.post('/verifyPass', isAuthenticated, async (req, res) => {
+	const { email, password } = req.body
+
+	try {
+		User.findOne({ email }).then((foundUser) => {
+			if (!foundUser) {
+				res.status(404).json({ message: 'User not found.' })
+				return
+			}
+
+			const passwordCorrect = bcrypt.compareSync(password, foundUser.password)
+
+			if (!passwordCorrect) {
+				res.status(404).json({ message: 'Wrong password.' })
+				return
+			}
+
+			res.status(200).json({ message: 'Password verified.' })
+		})
+	} catch (error) {
+		console.log(error)
+		res.status(500).json({ message: 'Failed to verify password' })
+	}
+})
+
 // GET  /auth/verify  -  Used to verify JWT stored on the client
 router.get('/verify', isAuthenticated, (req, res, next) => {
 	// If JWT token is valid the payload gets decoded by the
